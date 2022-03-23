@@ -1,0 +1,101 @@
+---
+title: "Alvarez_Carolina_T3_P4.R"
+author: "Carolina Alvarez"
+date: "21/3/2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Red de senalizacion
+
+A partir de la red de senalizacion mostrada en la figura 1
+
+(a) **Elabora una representacion verbal de la red**
+
+*Partiendo del punto mas bajo de la red, Depolar esta regulado por la AnionEM, calcio y KEV, y tiene la capacidad de reprimir a la H\*ATPasa y KOUT. Depolar regula a CalM, KOUT y a KAP. KEV, H\*ATPasa, AnionEM, Ca\^2+ATPasa, NOS y PLC estan regulados positivamente solopor la presencia de Calcio. Closure tiene tres activadores que son KOUT, KAP y AnionEM para estar activo. El calcio que regula e inactiva a varios nodos necesita de la presencia activa de CIS y CalM, y que no este activa la Ca\^2+ATPasa que es un represor del calcio. NOS regula positivamente a NO, que a su vez activa a GC y ADPRc. Estos activan a cGMP y cADPR respectivamente, junto con InsP3 estos tres nodos regulan positivamente a CIS y para que InsP3 este activado necesita del regulador PLC que es activado por calcio.*
+
+(b) **Elabora una tabla de posibles reglas de la red**
+
++---------------+--------------------------+--------------------------+
+| Nodo          | Activadores              | Represores               |
++===============+==========================+==========================+
+| Depolar       | KEV, Ca\^2+, AnionEM     | H\*ATPasa, KOUT          |
++---------------+--------------------------+--------------------------+
+| CalM          | 0                        | Depolar                  |
++---------------+--------------------------+--------------------------+
+| KEV           | Ca\^2+                   | 0                        |
++---------------+--------------------------+--------------------------+
+| H\*ATPasa     | 0                        | Ca\^2+                   |
++---------------+--------------------------+--------------------------+
+| KOUT          | Depolar                  | 0                        |
++---------------+--------------------------+--------------------------+
+| KAP           | Depolar                  | 0                        |
++---------------+--------------------------+--------------------------+
+| Closure       | KOUT, KAP, AnionEM       | 0                        |
++---------------+--------------------------+--------------------------+
+| AnionEM       | Ca\^2+                   | 0                        |
++---------------+--------------------------+--------------------------+
+| Ca\^2+ATPasa  | Ca\^2+                   | 0                        |
++---------------+--------------------------+--------------------------+
+| Ca\^2+        | CIS, CalM                | Ca\^2+ATPasa             |
++---------------+--------------------------+--------------------------+
+| NOS           | Ca\^2+                   | 0                        |
++---------------+--------------------------+--------------------------+
+| NO            | NOS                      | 0                        |
++---------------+--------------------------+--------------------------+
+| GC            | NO                       | 0                        |
++---------------+--------------------------+--------------------------+
+| cGMP          | GC                       | 0                        |
++---------------+--------------------------+--------------------------+
+| cADPR         | ADPRc                    | 0                        |
++---------------+--------------------------+--------------------------+
+| CIS           | cGMP, cADPR, InsP3       | 0                        |
++---------------+--------------------------+--------------------------+
+| PLC           | Ca\^2+                   | 0                        |
++---------------+--------------------------+--------------------------+
+| ADPR          | NO                       | 0                        |
++---------------+--------------------------+--------------------------+
+| InsP3         | PLC                      | 0                        |
++---------------+--------------------------+--------------------------+
+
+(c) **Encuentra y discute biologicamente el significado de los atractores (Usa BoolNet)**
+
+``` {.r}
+## CONTENIDO DEL ARCHIVO DE TEXTO PLANO
+
+#A, C & J & H & !D & !E
+#B, !A
+#C, J
+#D, !J
+#E, A
+#F, A
+#G, E & F & H
+#H, J
+#I, J
+#J, P & B & !I
+#K, J
+#L, K
+#M, L
+#N, M
+#O, S
+#P, N & O & R
+#Q, J
+#R, Q
+#S, L
+```
+
+``` {.r}
+library("BoolNet")
+#Cargar el archivo de texto plano
+red_eje <- loadNetwork("red_eje.txt")
+#encontrar los atractores
+atractors <- getAttractors(red_eje)
+#te dice el tamaño de la cuenca de atraccion y todos los atractores
+```
+
+*Solamente tiene un atractor donde todos los nodos deben estar inactivos menos el B y D que corresponden a CalM y H\*ATPasa. Si vemos el diagrama de la red cuando la H\*ATPasa esta activa reprime a Depolar por lo que no se activa a KOUT ni KAP que son necesarios para que se active Closure y como este no regula ningun otro nodo la red se estanca en este punto. Si depolar esta inactivo no puede reprimir a CalM por lo que estara activo regulando a Ca\^2+ que a su vez regula a AnionEM que regula a Closure pero no es suficiente necesita a KOUP y KAP para funcionar.*
